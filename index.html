@@ -146,7 +146,7 @@ html{--gut:32px}
 .hp-tab[aria-selected="false"]:hover{color:#CDC8C1}
 }
 /* 상단바 고정 — 메뉴 이동 시 섹션 제목이 가리지 않게 상단바 높이만큼 띄운다 */
-.hp-header{position:sticky;top:0;z-index:50;transition:transform 200ms var(--ease-out)}
+.hp-header{position:sticky;top:0;z-index:50}
 section[id]{scroll-margin-top:var(--hdr,72px)}
 /* 기본 구간(640px 미만)에서만 끊는 줄바꿈 */
 @media (min-width:640px){.br-base{display:none}}
@@ -185,8 +185,6 @@ html{--gut:24px}
 .hp-loc figcaption{padding:0 var(--gut)}
 .hp-loc .hp-map{height:360px;border-left:0}
 .hp-steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.hp-header.is-hidden{transform:translateY(-100%)}
-section[id]{scroll-margin-top:0}
 }
 input,select,textarea,button{color-scheme:light}
 </style>
@@ -549,25 +547,6 @@ class Component extends DCLogic {
   const scan = () => document.querySelectorAll('section').forEach((el) => { if (!seen.has(el)) { seen.add(el); io.observe(el); } });
   new MutationObserver(scan).observe(document.body, { childList: true, subtree: true });
   scan();
-})();
-</script>
-<script>
-/* 모바일(767px 이하) 상단바 — 아래로 내리면 숨기고, 위로 올리면 다시 보인다. 상단바 높이만큼 내려간 뒤부터 */
-(() => {
-  const mq = matchMedia('(max-width:767px)');
-  let last = scrollY, ticking = false;
-  const update = () => {
-    ticking = false;
-    const h = document.querySelector('.hp-header');
-    if (!h) return;
-    const y = scrollY, dy = y - last;
-    last = y;
-    if (!mq.matches || y < h.offsetHeight || h.querySelector('.hp-menu')) { h.classList.remove('is-hidden'); return; }
-    if (Math.abs(dy) < 4) return;
-    h.classList.toggle('is-hidden', dy > 0);
-  };
-  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-  mq.addEventListener('change', update);
 })();
 </script>
 <script>
