@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<title>반응형 6구간 미리보기</title>
+<style>
+body{margin:0;background:#E4E1DD;font-family:Pretendard,"Noto Sans KR",sans-serif;color:#322F2A}
+header{position:sticky;top:0;z-index:1;display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:16px 24px;background:#0C1723;color:#F2EEE6}
+header h1{margin:0;font-size:18px;font-weight:700}
+header nav{display:flex;flex-wrap:wrap;gap:8px}
+header a{color:#F2EEE6;font-size:14px;text-decoration:none;padding:6px 12px;border:1px solid #57534D}
+header a:hover{border-color:#EC883C}
+header label{margin-left:auto;font-size:14px;display:flex;align-items:center;gap:8px}
+main{display:flex;flex-direction:column;gap:48px;padding:32px 24px 88px}
+section{scroll-margin-top:88px;display:flex;flex-direction:column;gap:12px}
+section h2{margin:0;font-size:20px;font-weight:700}
+section h2 span{font-size:14px;font-weight:500;color:#6D675F;margin-left:12px}
+.frame{position:relative;overflow:hidden;background:#fff;border:1px solid #CDC8C1}
+.frame iframe{position:absolute;left:0;top:0;border:0;transform-origin:0 0}
+</style>
+</head>
+<body>
+<header>
+<h1 id="ttl">반응형 6구간</h1>
+<nav id="jump"></nav>
+<label><input id="sync" type="checkbox" checked> 스크롤 함께 움직이기</label>
+</header>
+<main id="list"></main>
+<script>
+// 구간마다 대표 기기 크기 하나. 실제 폭으로 그린 뒤 화면에 맞춰 줄여 보여 준다.
+const SEGMENTS = [
+  { key: 'base', name: '기본', range: '640px 미만', w: 390, h: 844, note: '휴대폰 (390×844)' },
+  { key: 'sm', name: 'sm', range: '640~767px', w: 700, h: 1000, note: '큰 휴대폰 가로·접는 폰 (700×1000)' },
+  { key: 'md', name: 'md', range: '768~1023px', w: 820, h: 1180, note: '태블릿 세로 (820×1180)' },
+  { key: 'lg', name: 'lg', range: '1024~1279px', w: 1180, h: 820, note: '태블릿 가로·작은 노트북 (1180×820)' },
+  { key: 'xl', name: 'xl', range: '1280~1535px', w: 1440, h: 900, note: '노트북 (1440×900)' },
+  { key: '2xl', name: '2xl', range: '1536px 이상', w: 1920, h: 1080, note: '데스크톱 모니터 (1920×1080)' }
+];
+const SRC = new URLSearchParams(location.search).get('src') || './index.html';
+const list = document.getElementById('list');
+const jump = document.getElementById('jump');
+const frames = [];
+document.getElementById('ttl').textContent += ' · ' + SRC.replace('./','');
+for (const s of SEGMENTS) {
+  const sec = document.createElement('section');
+  sec.id = 'seg-' + s.key;
+  sec.innerHTML = `<h2>${s.name} · ${s.range}<span>${s.note}</span></h2><div class="frame"><iframe src="${SRC}" width="${s.w}" height="${s.h}" title="${s.name} 구간 미리보기"></iframe></div>`;
+  list.appendChild(sec);
+  const a = document.createElement('a');
+  a.href = '#seg-' + s.key;
+  a.textContent = s.name;
+  jump.appendChild(a);
+  frames.push({ s, box: sec.querySelector('.frame'), el: sec.querySelector('iframe') });
+}
+const fit = () => {
+  for (const f of frames) {
+    const k = Math.min(1, f.box.parentElement.clientWidth / f.s.w);
+    f.el.style.transform = `scale(${k})`;
+    f.box.style.width = f.s.w * k + 'px';
+    f.box.style.height = f.s.h * k + 'px';
+  }
+};
+addEventListener('resize', fit);
+fit();
+// 한 화면을 스크롤하면 나머지도 같은 섹션 위치로 따라간다 (같은 출처라 접근 가능)
+let lock = false;
+for (const f of frames) {
+  f.el.addEventListener('load', () => {
+    f.el.contentWindow.addEventListener('scroll', () => {
+      if (lock || !document.getElementById('sync').checked) return;
+      const src = f.el.contentWindow;
+      const max = src.document.documentElement.scrollHeight - src.innerHeight;
+      const ratio = max > 0 ? src.scrollY / max : 0;
+      lock = true;
+      for (const o of frames) {
+        if (o === f) continue;
+        const w = o.el.contentWindow;
+        w.scrollTo({ top: ratio * (w.document.documentElement.scrollHeight - w.innerHeight), behavior: 'instant' });
+      }
+      requestAnimationFrame(() => { lock = false; });
+    }, { passive: true });
+  });
+}
+</script>
+</body>
+</html>
