@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>페이지를 찾을 수 없습니다 | 호랑팜</title>
+<script>
+/* 옛 파트너 주문 사이트 경로(/Contents/…, /Common/…, *.asp)는 order.horangpharm.co.kr 로 보낸다.
+   파트너 즐겨찾기용 — 2026-10-29 주소 이전. 6개월쯤 뒤(2027-04 이후) 떼도 된다. */
+(function () {
+  var p = location.pathname;
+  if (/^\/(Contents|Common)\//i.test(p) || /\.asp$/i.test(p)) {
+    location.replace('http://order.horangpharm.co.kr' + p + location.search);
+  }
+})();
+</script>
+<style>
+html{font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;background:#F2EEE6;color:#57534D;line-height:1.55;word-break:keep-all}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column}
+header{background:#0C1723;padding:0 24px}
+header a{display:flex;align-items:center;min-height:56px}
+main{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:560px;padding:64px 24px;margin:0 auto;width:100%;box-sizing:border-box}
+.rule{width:48px;height:6px;background:#EA7B27;margin-bottom:24px}
+h1{margin:0 0 12px;font-size:28px;font-weight:700;line-height:1.24;letter-spacing:-.025em;color:#322F2A}
+p{margin:0 0 32px;font-size:16px}
+.links{display:flex;flex-direction:column;gap:12px;font-size:16px}
+.links a{color:#9F4F13;font-weight:600;text-decoration:underline;text-underline-offset:4px}
+footer{padding:24px;font-size:13px;color:#6D675F;text-align:center}
+</style>
+</head>
+<body>
+<header><a href="/" aria-label="호랑팜 홈"><img src="/assets/7dfd35585a40fdb37c7bc738cde35f9d.svg" width="115" height="32" alt="HORANG PHARM"></a></header>
+<main>
+<div class="rule"></div>
+<h1>페이지를 찾을 수 없습니다.</h1>
+<p>주소가 바뀌었거나 없는 페이지입니다. 파트너 주문 사이트는 <strong>order.horangpharm.co.kr</strong> 로 옮겼습니다.</p>
+<div class="links">
+<a href="http://order.horangpharm.co.kr">파트너 주문 사이트로 가기 →</a>
+<a href="/">호랑팜 홈으로 →</a>
+</div>
+</main>
+<footer>주식회사 호랑팜 · 의약품 유통 · 개원 컨설팅 · 032-229-7777</footer>
+</body>
+</html>
